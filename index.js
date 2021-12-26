@@ -1,6 +1,6 @@
+const fs = require("fs");
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth"); // Use v2.4.5 instead of latest
-const fs = require("fs");
 puppeteer.use(StealthPlugin());
 
 let jsauto_content = fs.readFileSync("./js/jsautoswoosh.js", { encoding: "utf8" });
@@ -15,10 +15,7 @@ profile_data = profile_data.concat(base_profile);
 profile_data = profile_data.concat(other_profile);
 console.log(profile_data);
 
-const the_form_link =
-  "https://docs.google.com/forms/d/e/1FAIpQLSccyms8cKE4YcZqnU9EWh2fM5evhBwVbnMi7_eaS2ULwSyKaA/viewform";
-const theSize = "10";
-// const theSize = "6.5";
+const theSize = "11";
 
 const delay = (time) => {
   return new Promise(function (resolve) {
@@ -30,8 +27,10 @@ const loginGmail = async (page, username, password) => {
   await page.goto("https://accounts.google.com/signin/v2", { waitUntil: "networkidle2" });
   await page.type('input[type="email"]', username);
   await page.keyboard.press(String.fromCharCode(13));
-  await delay(2000);
+  await delay(5000);
+  console.log("password input", password);
   await page.type('input[type="password"]', password);
+  console.log("password typed");
   await page.keyboard.press(String.fromCharCode(13));
 };
 
@@ -41,6 +40,7 @@ const logoutGmail = async (page) => {
   await client.send("Network.clearBrowserCache");
 };
 
+// automate register ===========================================================================
 const swooshAutomate = async (page, url, fullname, idcard, email, emailForm, phoneNo) => {
   console.log(url, email);
   await page.goto(url, { waitUntil: "networkidle2" });
@@ -63,8 +63,8 @@ const swooshAutomate = async (page, url, fullname, idcard, email, emailForm, pho
   await page.evaluate(() => (document.getElementById("postcode").value = ""));
   await page.type("#postcode", "10150");
 
-  await page.click("#taxInNo");
-  await page.click("#valiramAgree");
+  // await page.click("#taxInNo");
+  // await page.click("#valiramAgree");
   if (theSize !== null) {
     await page.click(`#shoeSize${theSize}`);
   }
@@ -77,6 +77,38 @@ const swooshAutomate = async (page, url, fullname, idcard, email, emailForm, pho
   // await page.type("#province", "กรุงเทพ");
 };
 
+const swooshRegister = async (browser, profileData, link) => {
+  console.log(profileData.email, profileData.password);
+  await loginGmail(browser, profileData.email, profileData.password);
+  await delay(3000);
+  await swooshAutomate(
+    browser,
+    link,
+    profileData.fullname,
+    profileData.idcard,
+    profileData.email,
+    profileData.email,
+    profileData.phoneNo
+  );
+  await browser.waitForNavigation({ waitUntil: "networkidle0" });
+  await delay(2000);
+  await logoutGmail(browser);
+};
+// automate register ===========================================================================
+
+const automateCheckEmail = async (browser, profileData) => {
+  await loginGmail(browser, profileData.email, profileData.password);
+  console.log("logged in");
+  await delay(2000);
+  await browser.goto("https://mail.google.com/mail/u/0/#", { waitUntil: "networkidle2" });
+  // await browser.waitForNavigation({ waitUntil: "networkidle0" });
+  await delay(5000);
+  await browser.goto("https://mail.google.com/mail/u/0/#spam", { waitUntil: "networkidle2" });
+  await delay(5000);
+
+  await logoutGmail(browser);
+};
+
 const main = async () => {
   try {
     const browser = await puppeteer.launch({ headless: false });
@@ -86,22 +118,27 @@ const main = async () => {
     );
     await page.setDefaultNavigationTimeout(0);
 
-    for (let e_profile of profile_data) {
-      await loginGmail(page, e_profile.email, e_profile.password);
-      await delay(3000);
-      await swooshAutomate(
-        page,
-        the_form_link,
-        e_profile.fullname,
-        e_profile.idcard,
-        e_profile.email,
-        e_profile.email,
-        e_profile.phoneNo
-      );
-      await page.waitForNavigation({ waitUntil: "networkidle0" });
-      await delay(2000);
-      await logoutGmail(page);
+    /* mode: 
+      1 = register
+      2 = check email
+    */
+    const mode = 1;
+
+    switch (mode) {
+      case 1: // register
+        const the_form_link =
+          "https://docs.google.com/forms/d/e/1FAIpQLSf4jumObZ8ltDqzJYQGOTgz2scPqgLE7Lzb-BPCLIbpQm4NpQ/viewform"; // 9, 11
+        for (let e_profile of profile_data) {
+          await swooshRegister(page, e_profile, the_form_link);
+        }
+        break;
+      case 2: // check email
+        for (let e_profile of profile_data) {
+          await automateCheckEmail(page, e_profile);
+        }
+        break;
     }
+
     await page.close();
     await browser.close();
   } catch (e) {
