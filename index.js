@@ -1,19 +1,10 @@
 const fs = require("fs");
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth"); // Use v2.4.5 instead of latest
+const profilemanager = require("./libs/profile-manager");
 puppeteer.use(StealthPlugin());
 
 let jsauto_content = fs.readFileSync("./js/jsautoswoosh.js", { encoding: "utf8" });
-
-// get profile data
-const profile_data_obj = require("./profile_data");
-const profile_list_data = profile_data_obj.profile_list;
-const base_profile = profile_list_data.base_profile;
-const other_profile = profile_list_data.other_profile;
-let profile_data = [];
-profile_data = profile_data.concat(base_profile);
-profile_data = profile_data.concat(other_profile);
-console.log(profile_data);
 
 const theSize = "11";
 
@@ -117,6 +108,10 @@ const main = async () => {
       "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"
     );
     await page.setDefaultNavigationTimeout(0);
+
+    // get profile data
+    const profile_data = await profilemanager.getProfile(1, 2);
+    console.log(profile_data, profile_data.length);
 
     /* mode: 
       1 = register
