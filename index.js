@@ -32,7 +32,7 @@ const logoutGmail = async (page) => {
 };
 
 // automate register ===========================================================================
-const swooshAutomate = async (page, url, fullname, idcard, email, emailForm, phoneNo) => {
+const swooshAutomate = async (page, url, fullname, idcard, email, emailForm, phoneNo, shoeSize) => {
   console.log(url, email);
   await page.goto(url, { waitUntil: "networkidle2" });
   await delay(200);
@@ -57,7 +57,7 @@ const swooshAutomate = async (page, url, fullname, idcard, email, emailForm, pho
   // await page.click("#taxInNo");
   // await page.click("#valiramAgree");
   if (theSize !== null) {
-    await page.click(`#shoeSize${theSize}`);
+    await page.click(`#shoeSize${shoeSize}`);
   }
   await page.evaluate(() => (document.getElementById("address").value = ""));
   await page.type(
@@ -79,7 +79,8 @@ const swooshRegister = async (browser, profileData, link) => {
     profileData.idcard,
     profileData.email,
     profileData.email,
-    profileData.phoneNo
+    profileData.phoneNo,
+    profileData.shoeSize
   );
   await browser.waitForNavigation({ waitUntil: "networkidle0" });
   await delay(2000);
