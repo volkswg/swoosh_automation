@@ -1,6 +1,4 @@
-// input_data = [{ fullname: "ss", idcard: "aa", email: "dd", phoneNo: "ee" }];
-
-function setInputId(elem, id) {
+const setInputId = (elem, id) => {
   const radioParentClassName = ".SG0AAe";
   let radioBtnParent;
 
@@ -40,54 +38,57 @@ function setInputId(elem, id) {
       selectedElem.id = id;
       break;
   }
-}
+};
 
-evaluation_list = [
-  { taxInvoice: ["tax", "invoice"] },
-  { fullname: ["Name", "Surname"] },
-  { idcard: ["ID Card"] },
-  { email: ["Email", "E-mail", "ที่อยู่อีเมล"] },
-  { phoneNo: ["Phone Number", "Mobile"] },
-  { address: ["Address"] },
-  { postcode: ["Postal code", "Postcode"] },
-  { valiramGroup: ["Valiram Group"] },
-  { size: ["Shoe Size", "Size"] },
-  // { province: ["Province"] },
-];
+const main = () => {
+  const evaluation_list = [
+    { taxInvoice: ["tax", "invoice"] },
+    { fullname: ["Name", "Surname"] },
+    { idcard: ["ID Card"] },
+    { email: ["Email", "E-mail", "ที่อยู่อีเมล"] },
+    { phoneNo: ["Phone Number", "Mobile"] },
+    { address: ["Address"] },
+    { postcode: ["Postal code", "Postcode"] },
+    { valiramGroup: ["Valiram Group"] },
+    { size: ["Shoe Size", "Size"] },
+    // { province: ["Province"] },
+  ];
 
-const allInputParentClassname = ".o3Dpx";
-form_list = document.querySelector(allInputParentClassname);
-c_nodes = form_list.childNodes;
+  const allInputParentClassname = ".o3Dpx";
+  const inputList = document.querySelector(allInputParentClassname).childNodes;
 
-c_nodes.forEach((elem) => {
-  const evaluate_text = elem.textContent.toLowerCase();
-  console.log(evaluate_text);
+  inputList.forEach((elem) => {
+    const evaluate_text = elem.textContent.toLowerCase();
+    console.log(evaluate_text);
 
-  let is_found = false;
-  let input_type = "";
-  for (let e_eval of evaluation_list) {
-    if (is_found) {
-      break;
-    }
-    // console.log(e_eval);
-    const key = Object.keys(e_eval);
-    const needle = e_eval[key];
-    // console.log(needle);
-    for (let e_needle of needle) {
-      //   console.log(e_needle);
-      // check match with pattern text
-      const is_match = evaluate_text.match(e_needle.toLowerCase());
-      if (is_match !== null) {
-        is_found = true;
-        input_type = key[0];
-        // console.log(input_type);
+    let is_found = false;
+    let input_type = "";
+    for (let e_eval of evaluation_list) {
+      if (is_found) {
         break;
       }
+      // console.log(e_eval);
+      const key = Object.keys(e_eval);
+      const needle = e_eval[key];
+      // console.log(needle);
+      for (let e_needle of needle) {
+        //   console.log(e_needle);
+        // check match with pattern text
+        const is_match = evaluate_text.match(e_needle.toLowerCase());
+        if (is_match !== null) {
+          is_found = true;
+          input_type = key[0];
+          // console.log(input_type);
+          break;
+        }
+      }
     }
-  }
-  if (input_type.length > 0) {
-    // console.log(elem, input_type);
-    setInputId(elem, input_type);
-  }
-  // log input type
-});
+    if (input_type.length > 0) {
+      // console.log(elem, input_type);
+      setInputId(elem, input_type);
+    }
+    // log input type
+  });
+};
+
+main();
