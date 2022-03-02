@@ -1,53 +1,44 @@
 // input_data = [{ fullname: "ss", idcard: "aa", email: "dd", phoneNo: "ee" }];
 
 function setInputId(elem, id) {
-  if (id === "taxInvoice") {
-    const radioBtnParent = elem.querySelector(
-      ".freebirdFormviewerComponentsQuestionRadioChoicesContainer"
-    );
-    radioBtnParent.childNodes.forEach((childElem) => {
-      // console.log(childElem);
-      const contentText = childElem.textContent;
+  const radioParentClassName = ".SG0AAe";
+  let radioBtnParent;
 
-      if (contentText.toLowerCase().match("yes")) {
-        childElem.id = "taxInYes";
-      } else if (contentText.toLowerCase().match("no")) {
-        childElem.id = "taxInNo";
-      }
-    });
-  } else if (id === "valiramGroup") {
-    const radioBtnParent = elem.querySelector(
-      ".freebirdFormviewerComponentsQuestionRadioChoicesContainer"
-    );
-    radioBtnParent.childNodes.forEach((childElem) => {
-      const contentText = childElem.textContent;
-
-      if (contentText.toLowerCase().match("disagree")) {
-        childElem.id = "valiramDisagree";
-      } else if (contentText.toLowerCase().match("agree")) {
-        childElem.id = "valiramAgree";
-      }
-    });
-  } else if (id === "size") {
-    console.log(elem);
-    const radioBtnParent = elem.querySelector(
-      ".freebirdFormviewerComponentsQuestionRadioChoicesContainer"
-    );
-
-    radioBtnParent.childNodes.forEach((childElem) => {
-      const contentText = childElem.textContent;
-      const sizeText = contentText.replace(/[^\d.-]/g, "").replace(/[.]/g, "");
-      // console.log(sizeText);
-      childElem.id = "shoeSize" + sizeText;
-      // if (contentText.toLowerCase().match("disagree")) {
-      //   childElem.id = "valiramDisagree";
-      // } else if (contentText.toLowerCase().match("agree")) {
-      //   childElem.id = "valiramAgree";
-      // }
-    });
-  } else {
-    const selectedElem = elem.querySelector("input") || elem.querySelector("textarea");
-    selectedElem.id = id;
+  switch (id) {
+    case "taxInvoice":
+      radioBtnParent = elem.querySelector(radioParentClassName);
+      radioBtnParent.childNodes.forEach((childElem) => {
+        const contentText = childElem.textContent;
+        if (contentText.toLowerCase().match("yes")) {
+          childElem.id = "taxInYes";
+        } else if (contentText.toLowerCase().match("no")) {
+          childElem.id = "taxInNo";
+        }
+      });
+      break;
+    case "valiramGroup":
+      radioBtnParent = elem.querySelector(radioParentClassName);
+      radioBtnParent.childNodes.forEach((childElem) => {
+        const contentText = childElem.textContent;
+        if (contentText.toLowerCase().match("disagree")) {
+          childElem.id = "valiramDisagree";
+        } else if (contentText.toLowerCase().match("agree")) {
+          childElem.id = "valiramAgree";
+        }
+      });
+      break;
+    case "size":
+      radioBtnParent = elem.querySelector(radioParentClassName);
+      radioBtnParent.childNodes.forEach((childElem) => {
+        const contentText = childElem.textContent;
+        const sizeText = contentText.replace(/[^\d.-]/g, "").replace(/[.]/g, "");
+        childElem.id = "shoeSize" + sizeText;
+      });
+      break;
+    default:
+      const selectedElem = elem.querySelector("input") || elem.querySelector("textarea");
+      selectedElem.id = id;
+      break;
   }
 }
 
@@ -64,7 +55,8 @@ evaluation_list = [
   // { province: ["Province"] },
 ];
 
-form_list = document.querySelector(".freebirdFormviewerViewItemList");
+const allInputParentClassname = ".o3Dpx";
+form_list = document.querySelector(allInputParentClassname);
 c_nodes = form_list.childNodes;
 
 c_nodes.forEach((elem) => {
@@ -94,7 +86,7 @@ c_nodes.forEach((elem) => {
     }
   }
   if (input_type.length > 0) {
-    console.log(elem);
+    // console.log(elem, input_type);
     setInputId(elem, input_type);
   }
   // log input type
