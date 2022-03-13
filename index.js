@@ -3,9 +3,10 @@ const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth"); // Use v2.4.5 instead of latest
 const profilemanager = require("./libs/profile-manager");
 const automationRegister = require("./libs/automation-manager");
-puppeteer.use(StealthPlugin());
+// main iam247 js file
+const jsAutoCompId = fs.readFileSync("./js/jsautoswoosh.js", { encoding: "utf8" });
 
-let jsAutoCompId = fs.readFileSync("./js/jsautoswoosh.js", { encoding: "utf8" });
+puppeteer.use(StealthPlugin());
 
 const main = async () => {
   try {
@@ -24,14 +25,13 @@ const main = async () => {
       1 = register
       2 = check email
     */
-
     const mode = 1;
     const shop = "iam247";
+    const the_form_link =
+      "https://docs.google.com/forms/d/e/1FAIpQLScav-7uY6uN6oLaWYP3_hfw_ATo1ZbzZt69VDqkEH6hOJDElA/viewform";
 
     switch (mode) {
       case 1: // register
-        const the_form_link =
-          "https://docs.google.com/forms/d/e/1FAIpQLSf4jumObZ8ltDqzJYQGOTgz2scPqgLE7Lzb-BPCLIbpQm4NpQ/viewform"; // 9, 11
         for (let e_profile of profile_data) {
           const result = await automationRegister.iamTwentyFourSeven(
             page,
