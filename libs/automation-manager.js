@@ -2,6 +2,17 @@ const utility = require("./utility");
 const gmailManager = require("./gmail-manager");
 
 module.exports = {
+  automateCheckEmail: async (page, profileData) => {
+    await gmailManager.loginGmail(page, profileData.email, profileData.password);
+    console.log("logged in");
+    await utility.delay(2000);
+    await page.goto("https://mail.google.com/mail/u/0/#", { waitUntil: "networkidle2" });
+    // await browser.waitForNavigation({ waitUntil: "networkidle0" });
+    await utility.delay(5000);
+    await page.goto("https://mail.google.com/mail/u/0/#spam", { waitUntil: "networkidle2" });
+    await utility.delay(5000);
+    await gmailManager.logoutGmail(page);
+  },
   iamTwentyFourSeven: async (page, profileData, formURL, jsAutoCompId) => {
     console.log(profileData.email, profileData.password);
     await gmailManager.loginGmail(page, profileData.email, profileData.password);

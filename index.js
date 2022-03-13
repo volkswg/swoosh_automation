@@ -2,24 +2,10 @@ const fs = require("fs");
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth"); // Use v2.4.5 instead of latest
 const profilemanager = require("./libs/profile-manager");
-const gmailManager = require("./libs/gmail-manager");
-const utility = require("./libs/utility");
 const automationRegister = require("./libs/automation-manager");
 puppeteer.use(StealthPlugin());
 
 let jsAutoCompId = fs.readFileSync("./js/jsautoswoosh.js", { encoding: "utf8" });
-
-const automateCheckEmail = async (page, profileData) => {
-  await gmailManager.loginGmail(page, profileData.email, profileData.password);
-  console.log("logged in");
-  await utility.delay(2000);
-  await page.goto("https://mail.google.com/mail/u/0/#", { waitUntil: "networkidle2" });
-  // await browser.waitForNavigation({ waitUntil: "networkidle0" });
-  await utility.delay(5000);
-  await page.goto("https://mail.google.com/mail/u/0/#spam", { waitUntil: "networkidle2" });
-  await utility.delay(5000);
-  await gmailManager.logoutGmail(page);
-};
 
 const main = async () => {
   try {
@@ -57,7 +43,7 @@ const main = async () => {
         break;
       case 2: // check email
         for (let e_profile of profile_data) {
-          await automateCheckEmail(page, e_profile);
+          const result = await automationRegister.automateCheckEmail(page, e_profile);
         }
         break;
     }
