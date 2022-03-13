@@ -8,8 +8,6 @@ puppeteer.use(StealthPlugin());
 
 let jsauto_content = fs.readFileSync("./js/jsautoswoosh.js", { encoding: "utf8" });
 
-
-
 const logoutGmail = async (page) => {
   const client = await page.target().createCDPSession();
   await client.send("Network.clearBrowserCookies");
