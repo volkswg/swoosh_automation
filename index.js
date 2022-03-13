@@ -8,12 +8,6 @@ puppeteer.use(StealthPlugin());
 
 let jsauto_content = fs.readFileSync("./js/jsautoswoosh.js", { encoding: "utf8" });
 
-const logoutGmail = async (page) => {
-  const client = await page.target().createCDPSession();
-  await client.send("Network.clearBrowserCookies");
-  await client.send("Network.clearBrowserCache");
-};
-
 // automate register ===========================================================================
 const swooshAutomate = async (page, url, fullname, idcard, email, emailForm, phoneNo, shoeSize) => {
   console.log(url, email);
@@ -67,7 +61,7 @@ const swooshRegister = async (browser, profileData, link) => {
   );
   await browser.waitForNavigation({ waitUntil: "networkidle0" });
   await utility.delay(2000);
-  await logoutGmail(browser);
+  await gmailManager.logoutGmail(page);
 };
 // automate register ===========================================================================
 
@@ -80,8 +74,7 @@ const automateCheckEmail = async (browser, profileData) => {
   await utility.delay(5000);
   await browser.goto("https://mail.google.com/mail/u/0/#spam", { waitUntil: "networkidle2" });
   await utility.delay(5000);
-
-  await logoutGmail(browser);
+  await gmailManager.logoutGmail(page);
 };
 
 const main = async () => {

@@ -11,4 +11,9 @@ module.exports = {
     await page.keyboard.press(String.fromCharCode(13));
     return true;
   },
+  logoutGmail: async (page) => {
+    const client = await page.target().createCDPSession();
+    await client.send("Network.clearBrowserCookies");
+    await client.send("Network.clearBrowserCache");
+  },
 };
