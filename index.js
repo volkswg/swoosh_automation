@@ -2,26 +2,13 @@ const fs = require("fs");
 const puppeteer = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth"); // Use v2.4.5 instead of latest
 const profilemanager = require("./libs/profile-manager");
+const gmailManager = require("./libs/gmail-manager");
+const utility = require("./libs/utility");
 puppeteer.use(StealthPlugin());
 
 let jsauto_content = fs.readFileSync("./js/jsautoswoosh.js", { encoding: "utf8" });
 
-const delay = (time) => {
-  return new Promise(function (resolve) {
-    setTimeout(resolve, time);
-  });
-};
 
-const loginGmail = async (page, username, password) => {
-  await page.goto("https://accounts.google.com/signin/v2", { waitUntil: "networkidle2" });
-  await page.type('input[type="email"]', username);
-  await page.keyboard.press(String.fromCharCode(13));
-  await delay(5000);
-  console.log("password input", password);
-  await page.type('input[type="password"]', password);
-  console.log("password typed");
-  await page.keyboard.press(String.fromCharCode(13));
-};
 
 const logoutGmail = async (page) => {
   const client = await page.target().createCDPSession();
@@ -33,7 +20,7 @@ const logoutGmail = async (page) => {
 const swooshAutomate = async (page, url, fullname, idcard, email, emailForm, phoneNo, shoeSize) => {
   console.log(url, email);
   await page.goto(url, { waitUntil: "networkidle2" });
-  await delay(200);
+  await utility.delay(200);
   await page.goto(url, { waitUntil: "networkidle2" });
 
   // auto filling form
@@ -68,8 +55,8 @@ const swooshAutomate = async (page, url, fullname, idcard, email, emailForm, pho
 
 const swooshRegister = async (browser, profileData, link) => {
   console.log(profileData.email, profileData.password);
-  await loginGmail(browser, profileData.email, profileData.password);
-  await delay(3000);
+  await gmailManager.loginGmail(browser, profileData.email, profileData.password);
+  await utility.delay(3500);
   await swooshAutomate(
     browser,
     link,
@@ -81,20 +68,20 @@ const swooshRegister = async (browser, profileData, link) => {
     profileData.shoeSize
   );
   await browser.waitForNavigation({ waitUntil: "networkidle0" });
-  await delay(2000);
+  await utility.delay(2000);
   await logoutGmail(browser);
 };
 // automate register ===========================================================================
 
 const automateCheckEmail = async (browser, profileData) => {
-  await loginGmail(browser, profileData.email, profileData.password);
+  await gmailManager.loginGmail(browser, profileData.email, profileData.password);
   console.log("logged in");
-  await delay(2000);
+  await utility.delay(2000);
   await browser.goto("https://mail.google.com/mail/u/0/#", { waitUntil: "networkidle2" });
   // await browser.waitForNavigation({ waitUntil: "networkidle0" });
-  await delay(5000);
+  await utility.delay(5000);
   await browser.goto("https://mail.google.com/mail/u/0/#spam", { waitUntil: "networkidle2" });
-  await delay(5000);
+  await utility.delay(5000);
 
   await logoutGmail(browser);
 };
