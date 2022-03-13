@@ -61,7 +61,7 @@ const swooshRegister = async (browser, profileData, link) => {
   );
   await browser.waitForNavigation({ waitUntil: "networkidle0" });
   await utility.delay(2000);
-  await gmailManager.logoutGmail(page);
+  await gmailManager.logoutGmail(browser);
 };
 // automate register ===========================================================================
 
@@ -74,7 +74,7 @@ const automateCheckEmail = async (browser, profileData) => {
   await utility.delay(5000);
   await browser.goto("https://mail.google.com/mail/u/0/#spam", { waitUntil: "networkidle2" });
   await utility.delay(5000);
-  await gmailManager.logoutGmail(page);
+  await gmailManager.logoutGmail(browser);
 };
 
 const main = async () => {
