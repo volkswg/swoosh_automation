@@ -4,66 +4,10 @@ const StealthPlugin = require("puppeteer-extra-plugin-stealth"); // Use v2.4.5 i
 const profilemanager = require("./libs/profile-manager");
 const gmailManager = require("./libs/gmail-manager");
 const utility = require("./libs/utility");
+const automationRegister = require("./libs/automation-manager");
 puppeteer.use(StealthPlugin());
 
-let jsauto_content = fs.readFileSync("./js/jsautoswoosh.js", { encoding: "utf8" });
-
-// automate register ===========================================================================
-const swooshAutomate = async (page, url, fullname, idcard, email, emailForm, phoneNo, shoeSize) => {
-  console.log(url, email);
-  await page.goto(url, { waitUntil: "networkidle2" });
-  await utility.delay(200);
-  await page.goto(url, { waitUntil: "networkidle2" });
-
-  // auto filling form
-  // set input id
-  await page.addScriptTag({
-    content: jsauto_content,
-  });
-  await page.evaluate(() => (document.getElementById("fullname").value = ""));
-  await page.type("#fullname", fullname);
-  await page.evaluate(() => (document.getElementById("idcard").value = ""));
-  await page.type("#idcard", idcard);
-  await page.evaluate(() => (document.getElementById("email").value = ""));
-  await page.type("#email", emailForm);
-  await page.evaluate(() => (document.getElementById("phoneNo").value = ""));
-  await page.type("#phoneNo", phoneNo);
-  await page.evaluate(() => (document.getElementById("postcode").value = ""));
-  await page.type("#postcode", "10150");
-
-  // await page.click("#taxInNo");
-  // await page.click("#valiramAgree");
-  if (theSize !== null) {
-    await page.click(`#shoeSize${shoeSize}`);
-  }
-  await page.evaluate(() => (document.getElementById("address").value = ""));
-  await page.type(
-    "#address",
-    "123/84 หมู่บ้านโกลด์เด้นทาวน์สาธร ซอย 3 ถนนกัลปพฤกษ์ แขวงบางขุนเทียน เขตจอมทอง"
-  );
-  // await page.evaluate(() => (document.getElementById("province").value = ""));
-  // await page.type("#province", "กรุงเทพ");
-};
-
-const swooshRegister = async (page, profileData, link) => {
-  console.log(profileData.email, profileData.password);
-  await gmailManager.loginGmail(page, profileData.email, profileData.password);
-  await utility.delay(3500);
-  await swooshAutomate(
-    page,
-    link,
-    profileData.fullname,
-    profileData.idcard,
-    profileData.email,
-    profileData.email,
-    profileData.phoneNo,
-    profileData.shoeSize
-  );
-  await page.waitForNavigation({ waitUntil: "networkidle0" });
-  await utility.delay(2000);
-  await gmailManager.logoutGmail(page);
-};
-// automate register ===========================================================================
+let jsAutoCompId = fs.readFileSync("./js/jsautoswoosh.js", { encoding: "utf8" });
 
 const automateCheckEmail = async (page, profileData) => {
   await gmailManager.loginGmail(page, profileData.email, profileData.password);
@@ -96,13 +40,19 @@ const main = async () => {
     */
 
     const mode = 1;
+    const shop = "iam247";
 
     switch (mode) {
       case 1: // register
         const the_form_link =
           "https://docs.google.com/forms/d/e/1FAIpQLSf4jumObZ8ltDqzJYQGOTgz2scPqgLE7Lzb-BPCLIbpQm4NpQ/viewform"; // 9, 11
         for (let e_profile of profile_data) {
-          await swooshRegister(page, e_profile, the_form_link);
+          const result = await automationRegister.iamTwentyFourSeven(
+            page,
+            e_profile,
+            the_form_link,
+            jsAutoCompId
+          );
         }
         break;
       case 2: // check email
