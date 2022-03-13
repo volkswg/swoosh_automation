@@ -45,12 +45,12 @@ const swooshAutomate = async (page, url, fullname, idcard, email, emailForm, pho
   // await page.type("#province", "กรุงเทพ");
 };
 
-const swooshRegister = async (browser, profileData, link) => {
+const swooshRegister = async (page, profileData, link) => {
   console.log(profileData.email, profileData.password);
-  await gmailManager.loginGmail(browser, profileData.email, profileData.password);
+  await gmailManager.loginGmail(page, profileData.email, profileData.password);
   await utility.delay(3500);
   await swooshAutomate(
-    browser,
+    page,
     link,
     profileData.fullname,
     profileData.idcard,
@@ -59,22 +59,22 @@ const swooshRegister = async (browser, profileData, link) => {
     profileData.phoneNo,
     profileData.shoeSize
   );
-  await browser.waitForNavigation({ waitUntil: "networkidle0" });
+  await page.waitForNavigation({ waitUntil: "networkidle0" });
   await utility.delay(2000);
-  await gmailManager.logoutGmail(browser);
+  await gmailManager.logoutGmail(page);
 };
 // automate register ===========================================================================
 
-const automateCheckEmail = async (browser, profileData) => {
-  await gmailManager.loginGmail(browser, profileData.email, profileData.password);
+const automateCheckEmail = async (page, profileData) => {
+  await gmailManager.loginGmail(page, profileData.email, profileData.password);
   console.log("logged in");
   await utility.delay(2000);
-  await browser.goto("https://mail.google.com/mail/u/0/#", { waitUntil: "networkidle2" });
+  await page.goto("https://mail.google.com/mail/u/0/#", { waitUntil: "networkidle2" });
   // await browser.waitForNavigation({ waitUntil: "networkidle0" });
   await utility.delay(5000);
-  await browser.goto("https://mail.google.com/mail/u/0/#spam", { waitUntil: "networkidle2" });
+  await page.goto("https://mail.google.com/mail/u/0/#spam", { waitUntil: "networkidle2" });
   await utility.delay(5000);
-  await gmailManager.logoutGmail(browser);
+  await gmailManager.logoutGmail(page);
 };
 
 const main = async () => {
