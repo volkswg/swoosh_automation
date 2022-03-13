@@ -6,8 +6,6 @@ puppeteer.use(StealthPlugin());
 
 let jsauto_content = fs.readFileSync("./js/jsautoswoosh.js", { encoding: "utf8" });
 
-const theSize = "11";
-
 const delay = (time) => {
   return new Promise(function (resolve) {
     setTimeout(resolve, time);
@@ -111,13 +109,14 @@ const main = async () => {
     await page.setDefaultNavigationTimeout(0);
 
     // get profile data
-    const profile_data = await profilemanager.getProfile(1, 2);
-    console.log(profile_data, profile_data.length);
+    const profile_data = await profilemanager.getProfile(1, 1);
+    console.log(profile_data.length);
 
     /* mode: 
       1 = register
       2 = check email
     */
+
     const mode = 1;
 
     switch (mode) {
