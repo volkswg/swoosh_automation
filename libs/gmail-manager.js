@@ -6,7 +6,6 @@ module.exports = {
     await page.type('input[type="email"]', username);
     await page.keyboard.press(String.fromCharCode(13));
     await utility.delay(5000);
-    console.log("Email Typed");
     await page.type('input[type="password"]', password);
     await page.keyboard.press(String.fromCharCode(13));
     return true;
